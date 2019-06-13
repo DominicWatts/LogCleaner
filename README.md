@@ -16,8 +16,8 @@ Tables clear are:
 
 # Usage instructions #
 
-`xigen:log:claner [--] <clean>`
+`xigen:log:cleaner [--] <clean>`
 
-`php bin/magento xigen:log:claner clean`
+`php bin/magento xigen:log:cleaner clean`
 
 Or alternatively allow cron task to run
