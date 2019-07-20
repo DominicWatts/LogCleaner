@@ -13,7 +13,25 @@ class Cleaner extends AbstractHelper
     const CONFIG_XML_CRON = 'log_cleaner/log_cleaner/cron';
 
     /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
+     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     */
+    protected $connection;
+
+    /**
+     * @var \Magento\Framework\App\ResourceConnection
+     */
+    protected $resource;
+
+    /**
+     * Cleaner constructor.
      * @param \Magento\Framework\App\Helper\Context $context
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\App\ResourceConnection $resource
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
@@ -32,7 +50,10 @@ class Cleaner extends AbstractHelper
      */
     public function getCron()
     {
-        return $this->scopeConfig->getValue(self::CONFIG_XML_CRON, ScopeInterface::SCOPE_STORE);
+        return $this->scopeConfig->getValue(
+            self::CONFIG_XML_CRON,
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE
+        );
     }
 
     /**
@@ -58,11 +79,11 @@ class Cleaner extends AbstractHelper
         $tables = $this->getTablesToTruncate();
         foreach ($tables as $table) {
             try {
-                $this->logger->info((string)__('Attempt to truncate %1', $table));
+                $this->logger->info((string) __('Attempt to truncate %1', $table));
                 $this->connection->truncateTable($table);
-                $this->logger->info((string)__('%1 table has been truncated', $table));
+                $this->logger->info((string) __('%1 table has been truncated', $table));
             } catch (\Exception $e) {
-                $this->logger->info((string)__('Failure to truncate %1 : %2 ', $table, $e->getMessage()));
+                $this->logger->info((string) __('Failure to truncate %1 : %2 ', $table, $e->getMessage()));
                 $this->logger->critical($e);
             }
         }

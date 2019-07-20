@@ -7,13 +7,26 @@ namespace Xigen\LogCleaner\Cron;
  */
 class Cleaner
 {
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     protected $logger;
+
+    /**
+     * @var \Xigen\LogCleaner\Helper\Cleaner
+     */
     protected $cleanerHelper;
+
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     */
     protected $dateTime;
 
     /**
-     * Constructor
+     * Cleaner constructor.
      * @param \Psr\Log\LoggerInterface $logger
+     * @param \Xigen\LogCleaner\Helper\Cleaner $cleanerHelper
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
      */
     public function __construct(
         \Psr\Log\LoggerInterface $logger,

@@ -17,11 +17,43 @@ class Cleaner extends Command
     const CLEAN_ARGUMENT = 'clean';
     const LIMIT_OPTION = 'limit';
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
     private $logger;
+
+    /**
+     * @var \Magento\Framework\App\State
+     */
     private $state;
+
+    /**
+     * @var \Magento\Framework\Stdlib\DateTime\DateTime
+     */
     private $dateTime;
+
+    /**
+     * @var \Xigen\LogCleaner\Helper\Cleaner
+     */
     private $cleanerHelper;
 
+    /**
+     * @var InputInterface
+     */
+    private $input;
+
+    /**
+     * @var OutputInterface
+     */
+    private $output;
+
+    /**
+     * Cleaner constructor.
+     * @param \Psr\Log\LoggerInterface $logger
+     * @param \Magento\Framework\App\State $state
+     * @param \Magento\Framework\Stdlib\DateTime\DateTime $dateTime
+     * @param \Xigen\LogCleaner\Helper\Cleaner $cleanerHelper
+     */
     public function __construct(
         \Psr\Log\LoggerInterface $logger,
         \Magento\Framework\App\State $state,
