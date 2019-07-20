@@ -53,14 +53,13 @@ class Frequency extends \Magento\Framework\App\Config\Value
 
     /**
      * {@inheritdoc}
-     *
      * @return $this
      * @throws \Exception
      */
     public function afterSave()
     {
-        $time = $this->getData('groups/module/fields/time/value');
-        $frequency = $this->getData('groups/module/fields/frequency/value');
+        $time = $this->getData('groups/log_cleaner/fields/time/value');
+        $frequency = $this->getData('groups/log_cleaner/fields/frequency/value');
 
         $cronExprArray = [
             intval($time[1]), //Minute
@@ -79,7 +78,7 @@ class Frequency extends \Magento\Framework\App\Config\Value
                 ->setValue($cronExprString)
                 ->setPath(self::CRON_STRING_PATH)
                 ->save();
-            
+
             $this->_configValueFactory
                 ->create()
                 ->load(self::CRON_MODEL_PATH, 'path')
