@@ -2,15 +2,23 @@
 
 namespace Xigen\LogCleaner\Model\Config\Backend;
 
+use \Magento\Framework\Exception\LocalizedException;
+
+/**
+ * Class Frequency
+ * @package Xigen\LogCleaner\Model\Config\Backend
+ */
 class Frequency extends \Magento\Framework\App\Config\Value
 {
     /**
-     * Cron string path
+     * @var string Cron string path
+     * Rendered cron timer picker saves expression in this field
      */
     const CRON_STRING_PATH = 'crontab/default/jobs/xigen_logcleaner_cleaner/schedule/cron_expr';
 
     /**
-     * Cron model path
+     * @var string Cron model path
+     * Rendered cron timer picker saves model path in this field
      */
     const CRON_MODEL_PATH = 'crontab/default/jobs/xigen_logcleaner_cleaner/run/model';
 
@@ -62,8 +70,8 @@ class Frequency extends \Magento\Framework\App\Config\Value
         $frequency = $this->getData('groups/log_cleaner/fields/frequency/value');
 
         $cronExprArray = [
-            intval($time[1]), //Minute
-            intval($time[0]), //Hour
+            (int) $time[1], //Minute
+            (int) $time[0], //Hour
             $frequency == \Magento\Cron\Model\Config\Source\Frequency::CRON_MONTHLY ? '1' : '*', //Day of the Month
             '*', //Month of the Year
             $frequency == \Magento\Cron\Model\Config\Source\Frequency::CRON_WEEKLY ? '1' : '*', //Day of the Week
@@ -86,7 +94,7 @@ class Frequency extends \Magento\Framework\App\Config\Value
                 ->setPath(self::CRON_MODEL_PATH)
                 ->save();
         } catch (\Exception $e) {
-            throw new \Exception(__('We can\'t save the cron expression.'));
+            throw new LocalizedException(__('We can\'t save the cron expression.'));
         }
 
         return parent::afterSave();

@@ -1,0 +1,54 @@
+# Travis CI (MIT License) configuration file
+# @link https://travis-ci.org/
+
+# Use new container based environment
+sudo: false
+
+# Declare project language.
+# @link http://about.travis-ci.org/docs/user/languages/php/
+language: php
+
+# Declare versions of PHP to use. Use one decimal max.
+# @link http://docs.travis-ci.com/user/build-configuration/
+matrix:
+  fast_finish: true
+
+  include:
+    - php: '5.6'
+    # aliased to a recent 7.0 version
+    - php: '7.0'
+    # aliased to a recent 7.1 version
+    - php: '7.1'
+      env: SNIFF=1
+    # aliased to a recent 7.2 version
+    - php: '7.2'
+    # php nightly
+    - php: 'nightly'
+
+  allow_failures:
+    - php: nightly
+
+before_install:
+  # auth for magento repo.
+  - echo "{\"http-basic\":{\"repo.magento.com\":{\"username\":\"${MAGENTO_USERNAME}\",\"password\":\"${MAGENTO_PASSWORD}\"}}}" > auth.json
+  # Install PHP CodeSniffer.
+  - if [[ "$SNIFF" == "1" ]]; then composer self-update; fi
+  - if [[ "$SNIFF" == "1" ]]; then composer require squizlabs/php_codesniffer; fi
+  - if [[ "$SNIFF" == "1" ]]; then composer require magento/magento-coding-standard; fi
+  - if [[ "$SNIFF" == "1" ]]; then composer require dealerdirect/phpcodesniffer-composer-installer; fi
+  - if [[ "$SNIFF" == "1" ]]; then composer install; fi
+  - phpenv rehash
+
+script:
+  # Search for PHP syntax errors.
+  - find -L . -path ./vendor -prune -o -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+  # Run PHPCS.
+  # If the custom ruleset is named `.phpcs.xml`, `phpcs.xml`, `.phpcs.xml.dist` or `phpcs.xml.dist`
+  # and, like the travis script, is in the root of the project, you can leave
+  # out the `--standard=` part of the command.
+  - if [[ "$SNIFF" == "1" ]]; then php vendor/bin/phpcs --standard=Magento2 --ignore=*/etc/*,*/vendor/* ./; fi
+
+env:
+  global:
+    - secure: "dzBEZqyZJ77LCzbOOcdlUTYv8RtwKQNnsTfgcAxBxBIf/3zuOE/evh3bcmjMJ6W30LDhL/9zEiNNDQOzgUdy7e6OGgZLGrOzplMy2U1YQidsZBzsap0LMCMZTBHJM9iWfrVbrwcmvjLHUl0ttnQF4N2GWXD2L2d8WlKs2P+4uiP0cn7j0/PhdSkFV9BZRqcTYaXrmmln6h48MPV3tB7BGGIaXvLzIh02kqhIUOd6aehsNyqyv2rwOIZAtXgtB+JIbJ0TDCBsRGkvtFekYHC31lrF6XwRYom/GYMaOrTyaTgCyI3frX0V3eIvQSpYEhb4UYG6j6fVMrhFtDKKIHmfU5f73qDDqH9aEuLlLdhrREH7ST/mAqHe22csNPT82gth3PZujAWkkZHvdixWSffxLfzczLjnLjUPR7xShMwkqHUb0e1+eb/+ZDL87NAKZYLdioYAbiPoaeWzoEvWSNzgNYuVCcuRe9Fm08u9v6Gl8vza+IuZItmOqkH6ZrVhjiA4D4xtOn1fey24cMY2Wvx9JQMCYifRj2H6VQIUExXGHl6jwwi3BEOldjdakTRV7AulXQNO2CCdPFIcZCPYlaFJGciUAE6Qa8232e4S+JJgdSAgWwsiQsy3wwVstTe54eMPMRYvMdwFIaLJmOHKFoSvW4x0/LHdRsS0anx9cGIgiQY="
+    - secure: "SeVfyUBUNvnD/6Jf5woA2IFBO4Vb2FDK6NEOMDUZSCBpMfvbwES2axTBuUoN+NirMH1GMPkxcAmi4JZaIP1SNR4h7CBeNGKhTZiHWvzCCINIebHTddhrXso8cAj/Nj1N9VPV25qkcMGT80yvRTIeCtwaphGTCKGU8pkmxs1egaKe2WNpS5iMlkhnacBQhK0orc7hL3GP7Ht00Uwg/iMe9xkwFfYDHZxXWGZr2+0KBtWmXD9ZUDnIydtokIOsp6GwgFrhId/Nnw5VLWmZoj4dUXAZRpDaxA7lSMFzvmmxj/MImMLTC+mAKxpvuGy/WXEXafUYe8T43gEyhPKRB9EFU1AIZcDZNNf142EF8hc1J2gLXfMdaOcF4Vy6PnUK0t7ybh6YO/zmzbp42vr7+FWJt0irjCNTIHj10a3JoNRbQA2tpqq0SSpXU7DYdCxHJD4J3PdRvbyI94G9MSOY+nt1K38npjtCMs85EjAP8e71PhvgIQi6aKgbFXSIa0kv0a80am6AVeU3VV+PXivc88UG+7u6ASDRDHh4PBvSFWn/2ig+G6wZ52WLAjWvvUpQ9lImdElRrhriDwk9M8d5RXS6kDyYtyiXg4yWoCE4/Va5BDu7asF9XUt3PpWKpRAbBa8tf02eipOF+d449YCl1W8q5xBueqsE1wKTCMMY7yCuu0Q="
