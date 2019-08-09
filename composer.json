@@ -3,7 +3,7 @@
     "description": "Console script and cron task to clean magento logs",
     "type": "magento2-module",
     "license": "proprietary",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "authors": [
         {
             "name": "Dominic Xigen",
@@ -11,7 +11,15 @@
         }
     ],
     "minimum-stability": "dev",
-    "require": {},
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://repo.magento.com/"
+        }
+    ],
+    "require": {
+        "magento/framework": "*"
+    },
     "autoload": {
         "psr-4": {
             "Xigen\\LogCleaner\\": ""
