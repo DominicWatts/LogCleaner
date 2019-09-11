@@ -3,7 +3,7 @@
     <type name="Magento\Framework\Console\CommandList">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <item name="Cleaner" xsi:type="object">Xigen\LogCleaner\Console\Command\Cleaner</item>
+                <item name="LogCleaner_Cleaner" xsi:type="object">Xigen\LogCleaner\Console\Command\Cleaner</item>
             </argument>
         </arguments>
     </type>
